@@ -1,0 +1,26 @@
+import cv2
+import dlib
+
+p ="shape_predictor_68_face_landmarks.dat"
+image_path = 'insangrubu.jpg'
+image = cv2.imread(image_path)
+detector = dlib.get_frontal_face_detector()
+#use the data set for landmarks 
+predictor = dlib.shape_predictor(p)
+gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+faces = detector(gray_image)
+for face in faces:
+    x, y, w, h = face.left(), face.top(), face.width(), face.height()
+    cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
+    #find landmark in each face
+    shape = predictor(gray_image,face)
+    #place 68 landmarks
+    for n in range(0,68):
+        x = shape.part(n).x
+        y = shape.part(n).y
+        cv2.circle(image, (x, y), 1, (255, 0, 0), -1)
+
+
+cv2.imshow('Face Detection', image)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
